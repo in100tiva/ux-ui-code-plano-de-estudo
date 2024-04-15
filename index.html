@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cronograma de Estudos de UX, UI e GitHub</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f4f4f9;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        text-align: center;
+      }
+
+      #study-plan {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        width: 90%;
+        /* Adapt width for mobile first */
+        max-width: 600px;
+        /* Maximum width for larger devices */
+        text-align: left;
+        position: relative;
+      }
+
+      h1 {
+        font-size: 24px;
+        color: #2c3e50;
+        margin-bottom: 30px;
+        /* Increased margin-bottom for space between title and content */
+        margin-top: 20px;
+      }
+
+      #study-title {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      p {
+        font-size: 16px;
+        margin-top: 20px;
+      }
+
+      .activity {
+        margin-top: 10px;
+        padding-bottom: 5px;
+        border-bottom: 1px solid #eee;
+        position: relative;
+      }
+
+      .hours {
+        color: #e67e22;
+        font-weight: bold;
+      }
+
+      .turn {
+        display: block;
+        padding-bottom: 8px;
+      }
+
+      select,
+      button {
+        padding: 10px;
+        margin-top: 10px;
+        font-size: 16px;
+        width: 100%;
+        /* Full width for smaller screens */
+      }
+
+      @media (min-width: 768px) {
+
+        /* Adjustments for tablets and desktops */
+        select,
+        button {
+          width: auto;
+          /* Auto width for larger screens */
+        }
+      }
+
+      .tag {
+        margin-left: 10px;
+        width: 80px;
+        height: 30px;
+        background-color: #3498db;
+        /* Default color for UI */
+        color: white;
+        border-radius: 10%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 12px;
+      }
+
+      .ux {
+        background-color: #e74c3c;
+      }
+
+      /* Red color for UX */
+      .ui {
+        background-color: #3498db;
+      }
+
+      /* Blue color for UI */
+      .github {
+        background-color: #000000;
+      }
+
+      /* Black color for GitHub */
+      .html-css {
+        background-color: #d1256d;
+      }
+
+      /* Black color for GitHub */
+    </style>
+    <script type="text/javascript" src="./index.js" defer=""></script>
+    <link rel="stylesheet" href="./index.css">
+  </head>
+
+  <body>
+    <div id="study-plan">
+      <h1 id="study-title">Plano de Estudos</h1>
+      <div>
+        <select id="dayInput">
+          <option value="">Selecione o dia</option>
+          <!-- Options will be added by JavaScript -->
+        </select>
+        <button onclick="updateContent()">Ver Cronograma</button>
+      </div>
+      <p id="content" class=""></p>
+    </div>
+    <script>
+      const studyTopics = {
+        1: `<div class="activity"><strong>Introdução ao UX Design</strong><br>
+        <span class="turn">Manhã: Leitura sobre o que é UX Design e sua importância <span class="hours">(2 horas)</span>.</span><br>
+        <span class="turn">Tarde: Assistir a vídeos introdutórios sobre UX Design no YouTube ou Coursera <span class="hours">(2 horas)</span>.</span><br>
+        <span class="turn">Noite: Reflexão sobre produtos que o aluno usa regularmente e como eles poderiam ser melhorados do ponto de vista do UX <span class="hours">(1 hora)</span>.</span></div>`,
+        2: `<div class="activity"><strong>Princípios Básicos do UX Design</strong><br>
+        <span class="turn">Manhã: Estudo dos princípios de design como usabilidade, acessibilidade e interatividade <span class="hours">(2 horas)</span>.</span><br>
+        <span class="turn">Tarde: Realização de exercícios práticos para identificar problemas de usabilidade em websites simples <span class="hours">(2 horas)</span>.</span><br>
+        <span class="turn">Noite: Leitura sobre design inclusivo <span class="hours">(1 hora)</span>.</span></div>`,
+        3: `<div class="activity"><strong>Pesquisa em UX</strong><br>
+        <span class="turn">Manhã: Aprender sobre métodos de pesquisa em UX, incluindo pesquisas e entrevistas <span class="hours">(2 horas)</span>.</span><br>
+        <span class="turn">Tarde: Elaboração de um plano de pesquisa simples para um projeto fictício <span class="hours">(2 horas)</span>.</span><br>
+        <span class="turn">Noite: Análise de um estudo de caso de pesquisa UX de um produto real <span class="hours">(1 hora)</span>.</span></div>`,
+        4: `<div class="activity"><strong>Design de Interação</strong><br>
+        <span class="turn">Manhã: Estudo sobre wireframes e prototipagem <span class="hours">(2 horas)</span>.</span><br>
+        <span class="turn">Tarde: Prática de criação de wireframes para uma interface simples usando ferramentas como Figma ou Sketch <span class="hours">(2 horas)</span>.</span><br>
+        <span class="turn">Noite: Leitura sobre a importância do feedback do usuário no processo de design <span class="hours">(1 hora)</span>.</span></div>`,
+        5: `<div class="activity"><strong>Testes de Usabilidade</strong><br>
+        <span class="turn">Manhã: Aprender sobre diferentes tipos de testes de usabilidade <span class="hours">(2 horas)</span>.</span><br>
+        <span class="turn">Tarde: Realização de um teste de usabilidade básico com amigos ou familiares em um protótipo criado anteriormente <span class="hours">(2 horas)</span>.</span><br>
+        <span class="turn">Noite: Documentação dos resultados e reflexão sobre como melhorar o design com base no feedback <span class="hours">(1 hora)</span>.</span></div>`,
+        6: `<div class="activity"><strong>Análise e Melhoria Contínua</strong><br>
+        <span class="turn">Manhã: Leitura sobre como iterar designs baseados em feedback e testes <span class="hours">(2 horas)</span>.</span><br>
+        <span class="turn">Tarde: Revisão dos projetos da semana e planejamento de melhorias <span class="hours">(2 horas)</span>.</span><br>
+        <span class="turn">Noite: Sessão de relaxamento, revisão dos aprendizados da semana <span class="hours">(1 hora)</span>.</span></div>`,
+        7: `<div class="activity"><strong>Aplicação Prática e Estudo de Caso</strong><br>
+        <span class="turn">Manhã e Tarde: Desenvolvimento de um mini projeto de UX, aplicando todos os conceitos aprendidos durante a semana <span class="hours">(4 horas)</span>.</span><br>
+        <span class="turn">Noite: Avaliação do próprio trabalho e preparação de uma apresentação sobre o projeto <span class="hours">(2 horas)</span>.</span></div>`,
+        8: `<div class="activity"><strong>Introdução ao UI Design</strong><br>
+        <span class="turn">Manhã: Leitura sobre o que é UI Design e sua importância nos produtos digitais <span class="hours">(2 horas)</span>.</span><br>
+        <span class="turn">Tarde: Vídeos introdutórios sobre UI Design, encontrados em plataformas como LinkedIn Learning ou Udemy <span class="hours">(2 horas)</span>.</span><br>
+        <span class="turn">Noite: Análise de interfaces de usuário que o aluno admira, identificando elementos de design específicos <span class="hours">(1 hora)</span>.</span></div>`,
+        9: `<div class="activity"><strong>Elementos Visuais Básicos</strong><br>
+        <span class="turn">Manhã: Estudo sobre tipografia e escolha de fontes para interfaces digitais <span class="hours">(2 horas)</span>.</span><br>
+        <span class="turn">Tarde: Exercícios práticos de criação de esquemas de fontes para websites ou apps simples <span class="hours">(2 horas)</span>.</span><br>
+        <span class="turn">Noite: Leitura sobre o uso da cor na UI <span class="hours">(1 hora)</span>.</span></div>`,
+        10: `<div class="activity"><strong>Layout e Estrutura</strong><br>
+        <span class="turn">Manhã: Aprender sobre grid systems e sua aplicação em UI Design <span class="hours">(2 horas)</span>.</span><br>
+        <span class="turn">Tarde: Prática de design de uma página simples usando grids com ferramentas como Adobe XD <span class="hours">(2 horas)</span>.</span><br>
+        <span class="turn">Noite: Estudo de caso sobre layouts eficazes em websites populares <span class="hours">(1 hora)</span>.</span></div>`,
+        11: `<div class="activity"><strong>Ícones e Botões</strong><br>
+        <span class="turn">Manhã: Teoria sobre criação de ícones e botões eficazes <span class="hours">(2 horas)</span>.</span><br>
+        <span class="turn">Tarde: Design de ícones e botões para um projeto fictício <span class="hours">(2 horas)</span>.</span><br>
+        <span class="turn">Noite: Revisão de designs de botões em apps famosos e suas funcionalidades <span class="hours">(1 hora)</span>.</span></div>`,
+        12: `<div class="activity"><strong>Interação e Animação</strong><br>
+        <span class="turn">Manhã: Introdução às microinterações e animações em UI <span class="hours">(2 horas)</span>.</span><br>
+        <span class="turn">Tarde: Utilização de ferramentas como Adobe After Effects para criar animações simples <span class="hours">(2 horas)</span>.</span><br>
+        <span class="turn">Noite: Análise de animações em interfaces populares e seu impacto na experiência do usuário <span class="hours">(1 hora)</span>.</span></div>`,
+        13: `<div class="activity"><strong>Prototipagem e Feedback</strong><br>
+        <span class="turn">Manhã e Tarde: Desenvolvimento de um protótipo interativo de uma interface com ferramentas como Figma <span class="hours">(4 horas)</span>.</span><br>
+        <span class="turn">Noite: Preparação de uma sessão de feedback com amigos ou familiares sobre o protótipo <span class="hours">(2 horas)</span>.</span></div>`,
+        14: `<div class="activity"><strong>Revisão e Apresentação</strong><br>
+        <span class="turn">Manhã: Revisão dos feedbacks recebidos e ajustes no protótipo <span class="hours">(2 horas)</span>.</span><br>
+        <span class="turn">Tarde: Finalização do projeto e preparação de uma apresentação sobre o design criado <span class="hours">(2 horas)</span>.</span><br>
+        <span class="turn">Noite: Reflexão sobre os aprendizados da semana e planejamento de estudos futuros <span class="hours">(1 hora)</span>.</span></div>`,
+        15: `<div class="activity"><strong>Introdução ao GitHub e Configuração</strong><br>
+        <span class="turn">Manhã: Leitura sobre o que é o GitHub, o que é controle de versão e por que é importante <span class="hours">(1 hora)</span>.</span><br>
+        <span class="turn">Tarde: Criação de uma conta no GitHub e instalação do Git no computador do usuário <span class="hours">(1 hora)</span>.</span><br>
+        <span class="turn">Noite: Configuração básica do Git (configuração de usuário e email) e criação do primeiro repositório no GitHub <span class="hours">(1 hora)</span>.</span></div>`,
+        16: `<div class="activity"><strong>Git Básico - Comandos Essenciais</strong><br>
+        <span class="turn">Manhã: Aprendizado dos comandos básicos do Git: git init, git clone, git add, git commit <span class="hours">(2 horas)</span>.</span><br>
+        <span class="turn">Tarde: Prática desses comandos criando arquivos de texto simples e fazendo alterações <span class="hours">(2 horas)</span>.</span><br>
+        <span class="turn">Noite: Leitura sobre a importância do commit messages e boas práticas <span class="hours">(1 hora)</span>.</span></div>`,
+        17: `<div class="activity"><strong>Trabalhando com Branches</strong><br>
+        <span class="turn">Manhã: Introdução ao conceito de branches no Git <span class="hours">(1 hora)</span>.</span><br>
+        <span class="turn">Tarde: Prática de criação, mudança, e fusão de branches (git branch, git checkout, git merge) <span class="hours">(2 horas)</span>.</span><br>
+        <span class="turn">Noite: Assistir a vídeos tutoriais sobre resolução de conflitos em merges <span class="hours">(1 hora)</span>.</span></div>`,
+        18: `<div class="activity"><strong>GitHub na Prática - Issues e Forks</strong><br>
+        <span class="turn">Manhã: Aprender sobre issues no GitHub, como criar e gerenciar issues <span class="hours">(1 hora)</span>.</span><br>
+        <span class="turn">Tarde: Prática de fork de um repositório existente e contribuição para um projeto público (proposta de mudança via pull request) <span class="hours">(2 horas)</span>.</span><br>
+        <span class="turn">Noite: Estudo sobre a etiqueta no GitHub e interação com comunidades <span class="hours">(1 hora)</span>.</span></div>`,
+        19: `<div class="activity"><strong>Pull Requests e Code Reviews</strong><br>
+        <span class="turn">Manhã: Aprendizado detalhado sobre pull requests e a importância de code reviews <span class="hours">(1 hora)</span>.</span><br>
+        <span class="turn">Tarde: Prática de revisão de código em pull requests de projetos públicos <span class="hours">(2 hora)</span>.</span><br>
+        <span class="turn">Noite: Criação de um pull request em um projeto próprio e gestão do feedback <span class="hours">(1 hora)</span>.</span></div>`,
+        20: `<div class="activity"><strong>Explorando Funcionalidades Avançadas</strong><br>
+        <span class="turn">Manhã e Tarde: Exploração de funcionalidades adicionais do GitHub como GitHub Actions, GitHub Pages <span class="hours">(4 horas)</span>.</span><br>
+        <span class="turn">Noite: Leitura sobre como automatizar processos com GitHub Actions <span class="hours">(1 hora)</span>.</span></div>`,
+        21: `<div class="activity"><strong>Projeto Final e Revisão</strong><br>
+        <span class="turn">Manhã: Desenvolvimento de um pequeno projeto pessoal utilizando todos os conceitos aprendidos durante a semana <span class="hours">(3 horas)</span>.</span><br>
+        <span class="turn">Tarde: Revisão do projeto, ajustes finais e preparação para a apresentação <span class="hours">(2 horas)</span>.</span><br>
+        <span class="turn">Noite: Reflexão sobre os aprendizados da semana e planejamento de passos futuros no aprendizado de controle de versão <span class="hours">(1 hora)</span>.</span></div>`,
+        22: `<div class="activity"><strong>Introdução ao HTML</strong><br>
+        <span class="turn">Manhã: Introdução ao que é HTML e sua estrutura básica <span class="hours">(1 hora)</span>.</span><br>
+        <span class="turn">Tarde: Prática de criação de uma estrutura básica de página HTML, incluindo cabeçalhos, parágrafos e listas <span class="hours">(2 horas)</span>.</span><br>
+        <span class="turn">Noite: Leitura sobre a importância da semântica no HTML para SEO <span class="hours">(1 hora)</span>.</span></div>`,
+        23: `<div class="activity"><strong>Elementos HTML para Landing Pages</strong><br>
+        <span class="turn">Manhã: Estudo dos elementos HTML essenciais para landing pages como <header>, <footer>, <section> e <article> <span class="hours">(1 hora)</span>.</span><br>
+        <span class="turn">Tarde: Prática de montagem de uma estrutura simples de landing page utilizando os elementos estudados <span class="hours">(2 horas)</span>.</span><br>
+        <span class="turn">Noite: Exercícios de adição de elementos multimídia como imagens e vídeos, focando em tags como <img> e <video> <span class="hours">(1 hora)</span>.</span></div>`,
+        24: `<div class="activity"><strong>Introdução ao CSS</strong><br>
+        <span class="turn">Manhã: Aprendizado sobre o que é CSS e como ele é usado para estilizar páginas HTML <span class="hours">(1 hora)</span>.</span><br>
+        <span class="turn">Tarde: Prática de aplicação de estilos básicos como cores, fontes e alinhamento <span class="hours">(2 horas)</span>.</span><br>
+        <span class="turn">Noite: Leitura sobre a cascata e especificidade em CSS <span class="hours">(1 hora)</span>.</span></div>`,
+        25: `<div class="activity"><strong>Layouts com CSS</strong><br>
+        <span class="turn">Manhã: Estudo de modelos de layout CSS como Flexbox e Grid <span class="hours">(1 hora)</span>.</span><br>
+        <span class="turn">Tarde: Prática de criação de um layout de landing page usando Flexbox <span class="hours">(2 horas)</span>.</span><br>
+        <span class="turn">Noite: Análise de layouts de sites populares e como eles são construídos <span class="hours">(1 hora)</span>.</span></div>`,
+        26: `<div class="activity"><strong>Estilos Avançados em CSS</strong><br>
+        <span class="turn">Manhã: Aprendizado sobre animações, transições e transformações em CSS <span class="hours">(1 hora)</span>.</span><br>
+        <span class="turn">Tarde: Implementação de animações simples para melhorar a interatividade da landing page <span class="hours">(2 horas)</span>.</span><br>
+        <span class="turn">Noite: Leitura sobre a otimização de performance do CSS <span class="hours">(1 hora)</span>.</span></div>`,
+        27: `<div class="activity"><strong>Formulários HTML e Captura de Leads</strong><br>
+        <span class="turn">Manhã: Teoria sobre a importância de formulários para landing pages <span class="hours">(1 hora)</span>.</span><br>
+        <span class="turn">Tarde: Prática de criação de um formulário de contato ou captação de leads, usando <form>, <input>, <label>, etc. <span class="hours">(2 horas)</span>.</span><br>
+        <span class="turn">Noite: Estudo sobre a acessibilidade em formulários web <span class="hours">(1 hora)</span>.</span></div>`,
+        28: `<div class="activity"><strong>SEO Básico para HTML</strong><br>
+        <span class="turn">Manhã: Aprendizado sobre as tags de cabeçalho <head> e os metadados essenciais para SEO como <title>, <meta description>, <meta keywords> <span class="hours">(1 hora)</span>.</span><br>
+        <span class="turn">Tarde: Implementação de tags de SEO na landing page <span class="hours">(2 horas)</span>.</span><br>
+        <span class="turn">Noite: Leitura sobre a importância das URLs amigáveis e estrutura de links internos <span class="hours">(1 hora)</span>.</span></div>`,
+        29: `<div class="activity"><strong>CSS para SEO e Performance</strong><br>
+        <span class="turn">Manhã: Teoria sobre como o CSS impacta a performance do site e práticas de otimização <span class="hours">(1 hora)</span>.</span><br>
+        <span class="turn">Tarde: Revisão do CSS da landing page com foco em otimização de performance <span class="hours">(2 horas)</span>.</span><br>
+        <span class="turn">Noite: Análise de ferramentas de teste de performance como Google PageSpeed Insights <span class="hours">(1 hora)</span>.</span></div>`,
+        30: `<div class="activity"><strong>Projeto Final - Landing Page Completa</strong><br>
+        <span class="turn">Manhã e Tarde: Desenvolvimento de uma landing page completa, integrando todos os conceitos aprendidos <span class="hours">(4 horas)</span>.</span><br>
+        <span class="turn">Noite: Testes finais de SEO e performance, ajustes finais e preparação para publicação <span class="hours">(2 horas)</span>.</span></div>`
+      };
+
+      function updateContent() {
+        const day = document.getElementById('dayInput').value;
+        const contentElement = document.getElementById('content');
+        const topicTag = getTopicTag(day); // Function to determine the tag based on the day
+        const titleElement = document.getElementById('study-title');
+        titleElement.innerHTML = `Plano de Estudos <span class="tag ${topicTag}">${topicTag.toUpperCase()}</span>`;
+        contentElement.innerHTML = studyTopics[day] || 'Sem estudos programados para este dia';
+      }
+
+      function getTopicTag(day) {
+        if (day >= 1 && day <= 7) return 'ux';
+        else if (day >= 8 && day <= 14) return 'ui';
+        else if (day >= 15 && day <= 21) return 'github';
+        else if (day >= 22 && day <= 30) return 'html-css';
+        return '';
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+        const selectElement = document.getElementById('dayInput');
+        for (let i = 1; i <= 31; i++) {
+          const option = document.createElement('option');
+          option.value = i;
+          option.text = i;
+          selectElement.appendChild(option);
+        }
+      });
+    </script>
+
+
+  </body>
+
+</html>
